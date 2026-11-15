@@ -1,6 +1,7 @@
 import {Suspense, lazy} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 import RequireRole from "../components/navigation/RequireRole";
+import StudentOrGuest from "../components/navigation/StudentOrGuest";
 import {Spinner} from "../components/common/Feedback";
 
 import PublicLayout from "../layouts/PublicLayout";
@@ -99,8 +100,22 @@ export default function AppRouter() {
         {/* Public */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          <Route
+            path="/courses"
+            element={
+              <StudentOrGuest>
+                <Courses />
+              </StudentOrGuest>
+            }
+          />
+          <Route
+            path="/courses/:courseId"
+            element={
+              <StudentOrGuest>
+                <CourseDetails />
+              </StudentOrGuest>
+            }
+          />
           <Route path="/categories" element={<Categories />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route
@@ -114,7 +129,11 @@ export default function AppRouter() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/request-subscription"
-            element={<RequestSubscription />}
+            element={
+              <RequireRole roles={["student"]}>
+                <RequestSubscription />
+              </RequireRole>
+            }
           />
         </Route>
 

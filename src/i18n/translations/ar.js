@@ -12,6 +12,7 @@ export default {
     remove: 'إزالة',
     close: 'إغلاق',
     confirm: 'تأكيد',
+    studentsOnly: 'هذا القسم للطلاب فقط — سيتم تحويلك إلى لوحتك.',
     search: 'بحث',
     filter: 'تصفية',
     clearFilters: 'مسح الفلاتر',

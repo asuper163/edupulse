@@ -189,6 +189,14 @@ See §4. ~105 source files. Key singles: `index.html` (fonts, ar/rtl bootstrap),
 
 ## 17. Change Log
 
+- **2026-11-15 v2.10.0 — COURSES CATALOG & SUBSCRIPTION FLOW GATED TO GUESTS + STUDENTS ONLY; OTHER ROLES REDIRECTED WITH NOTICE.**
+  - User rule: any role other than `student` may not enter «الدورات» (and subscribe); only students.
+  - New gate `src/components/navigation/StudentOrGuest.jsx` — guests and students pass; any other logged-in role gets `navigate(dashboardPath(role))` + a warning toast «هذا القسم للطلاب فقط».
+  - `src/app/router.jsx` — `/courses` and `/courses/:courseId` wrapped in `StudentOrGuest`; `/request-subscription` now wrapped in `RequireRole roles={["student"]}` (non-student → their dashboard, guests → login).
+  - `src/services/subscriptionService.js` — defense in depth: `create()` now verifies the `studentId` belongs to a user with role `student`, else returns `{ ok: false, error: 'students_only' }`. (No JSX callers of `enrollmentService.enroll` remain by design.)
+  - `ar.js` — new key `common.studentsOnly`.
+  - Verified role matrix in browser: guest → sees catalog; student → sees catalog + subscription page; instructor → redirected to /instructor; admin → /admin; sales → /sales + toast visible. Build ✓ (8.98s).
+
 - **2026-11-15 v2.9.0 — ADMIN «CHANGE PASSWORD» EYE ICON OVERLAPPED THE TEXT (RTL/LTR MIX); FIXED.**
   - Root cause: the admin user editor's password input is `dir="ltr"`, so its `paddingInlineEnd` reserves space on the **right**, while the toggle button used `end-3` (logical `inset-inline-end`) which, on the RTL page, resolves to **left** — the eye landed on top of the typed password.
   - Fix: `src/pages/admin/Users.jsx` — eye button switched from `end-3` to physical `right-3`, matching the input direction. Other eye toggles verified consistent (Login/Register inherit RTL so padding and button both resolve to the left — no overlap). Verified geometrically: 44px end padding, button sits inside the padded zone, no text overlap. Build ✓.

@@ -21,6 +21,8 @@ export const subscriptionService = {
     const course = storageAdapter.getCollection('courses').find((c) => c.id === courseId);
     if (!course) return { ok: false, error: 'not_found' };
     if (course.status !== 'published') return { ok: false, error: 'not_published' };
+    const student = storageAdapter.getCollection('users').find((u) => u.id === studentId);
+    if (!student || student.role !== 'student') return { ok: false, error: 'students_only' };
     const amountDue = priceOf(course);
     const now = nowIso();
     const request = {
