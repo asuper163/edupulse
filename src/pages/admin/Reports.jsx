@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Download, Users, BookOpen, ClipboardList, CheckCircle2, ListChecks, Star, Award, Eye } from 'lucide-react';
+import { FileText, Download, Users, BookOpen, ClipboardList, CheckCircle2, ListChecks, Star, Award, Eye, Banknote, Wallet } from 'lucide-react';
 import { useLanguage } from '../../i18n/index.jsx';
 import { useToast } from '../../contexts/ToastContext';
 import { reportService } from '../../services/reportService';
@@ -22,6 +22,8 @@ export default function Reports() {
     { type: 'quizzes', icon: ListChecks, label: t('admin.reportQuizzes') },
     { type: 'instructors', icon: Award, label: t('admin.reportInstructors') },
     { type: 'reviews', icon: Star, label: t('admin.reportReviews') },
+    { type: 'sales', icon: Banknote, label: t('admin.reportSales') },
+    { type: 'payments', icon: Wallet, label: t('admin.reportPayments') },
   ];
 
   const generate = (type) => {

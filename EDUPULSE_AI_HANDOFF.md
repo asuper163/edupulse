@@ -189,6 +189,14 @@ See §4. ~105 source files. Key singles: `index.html` (fonts, ar/rtl bootstrap),
 
 ## 17. Change Log
 
+- **2026-11-15 v2.6.0 — ADMIN GAINS FULL SALES VISIBILITY: PAID/REMAINING KPIs, SIDEBAR CRM LINK, SALES & PAYMENTS CSV REPORTS.**
+  - User ask: platform admin needs to know sales, see paid vs. remaining, and export sales-specific reports.
+  - **Admin sidebar** (`AdminLayout.jsx`) — new item «المبيعات والاشتراكات» (Banknote icon) → `/sales` (admin can already open the CRM; it was undiscoverable).
+  - **Admin overview** (`admin/Overview.jsx`) — new cash strip under the KPI grid: إجمالي الطلبات (مع طلبات الشهر)، اشتراكات مكتملة، إجمالي المدفوع، المتبقي + «عرض كل المبيعات» button → `/sales`. Numbers live from `subscriptionService.stats()`.
+  - **Admin reports** (`admin/Reports.jsx`) — two new cards: «تقرير المبيعات (الطلبات)» (every request with due/paid/outstanding/stage) and «تقرير المدفوعات» (every payment row). Backend in `reportService.js` (`sales`, `payments` types) — payments also flattens legacy grandfathered requests into settlement rows (amountPaid without payments[]) so the ledger is complete from day one.
+  - **SalesLayout role label** — admin viewers now read «مدير المنصة» (role-aware roleKey) instead of «مسؤول الاشتراكات».
+  - **Storage initializer** — logs a `[EDUPULSE] storage reseeded` warning with the reason (schema version/users validity) so any future reseed is diagnosable instead of silent.
+  - **Verified in browser (admin login):** sales strip shows live numbers (٤٣ طلب · ٤٠ مكتمل · ٣٤٥٬٨٠٠ ج.م مدفوع · ٢١٬٠٠٠ ج.م متبقي), both report cards generate correctly (43 rows / 41 rows), sidebar link present. Build ✓ (7.17s).
 - **2026-11-15 v2.5.0 — HORIZONTAL-SCROLLING STAGE PILLS REDESIGNED (SITE-WIDE TABS); NO HORIZONTAL SCROLL ANYWHERE.**
   - User feedback (screenshot of sales «متابعة طلبات الاشتراك» filter strip with a native horizontal scrollbar): "مش عايز اشوف حاجة زي كدا في الموقع كله."
   - `src/components/common/Feedback.jsx` — `Tabs` no longer renders `overflow-x-auto`; now a wrapping segmented pill bar: `flex flex-wrap gap-1.5` inside a rounded container (dark `#151F32` / light `slate-100`), each pill `h-9 px-3.5 rounded-xl` with an inline count badge (active: translucent white; dark: `#0B1120` on emerald; light: white with emerald ring). Active pill = emerald fill + emerald glow shadow.

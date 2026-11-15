@@ -1,5 +1,5 @@
 import DashboardLayout from './DashboardLayout';
-import { LayoutDashboard, Users, BookOpen, FolderTree, ClipboardList, ListChecks, Star, Award, FileText, Mail, Bell, Settings, Database } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, FolderTree, ClipboardList, ListChecks, Star, Award, FileText, Mail, Bell, Settings, Database, Banknote } from 'lucide-react';
 import { useLanguage } from '../i18n/index.jsx';
 
 export default function AdminLayout() {
@@ -14,6 +14,7 @@ export default function AdminLayout() {
     { to: '/admin/reviews', icon: Star, label: t('admin.reviews') },
     { to: '/admin/certificates', icon: Award, label: t('admin.certificates') },
     { to: '/admin/reports', icon: FileText, label: t('admin.reports') },
+    { to: '/sales', icon: Banknote, label: t('admin.salesCrm') },
     { to: '/admin/messages', icon: Mail, label: t('admin.messages') },
     { to: '/admin/notifications', icon: Bell, label: t('admin.notifications') },
     { to: '/admin/settings', icon: Settings, label: t('admin.settings') },

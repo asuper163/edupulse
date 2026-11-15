@@ -5,11 +5,12 @@ import { generateSeedData } from '../data/seed';
 
 export function initializeStorage() {
   const currentVersion = storageAdapter.get(STORAGE_KEYS.schemaVersion, null);
-  if (currentVersion === SCHEMA_VERSION && Array.isArray(storageAdapter.get(STORAGE_KEYS.users, null))) {
+  const users = storageAdapter.get(STORAGE_KEYS.users, null);
+  if (currentVersion === SCHEMA_VERSION && Array.isArray(users)) {
     return { seeded: false, version: currentVersion };
   }
   // One-time migration / fresh install: wipe old artifacts, then seed deterministically.
-  // (v1 → v2: course duration semantics changed to weeks; catalog replaced with 9 programs.)
+  console.warn('[EDUPULSE] storage reseeded — schema', currentVersion, '→', SCHEMA_VERSION, '| users valid:', Array.isArray(users));
   storageAdapter.resetAllData();
   const seed = generateSeedData();
   for (const [name, items] of Object.entries(seed)) {

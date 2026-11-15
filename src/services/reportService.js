@@ -53,6 +53,27 @@ export const reportService = {
       }
       case 'reviews':
         return storageAdapter.getCollection('reviews').map((r) => ({ course_en: coursesById[r.courseId]?.title?.en, student: usersById[r.studentId]?.name || r.studentId, rating: r.rating, status: r.status, comment: r.comment, createdAt: r.createdAt?.slice(0, 10) }));
+      case 'sales':
+        return storageAdapter.getCollection('subscriptionRequests').map((r) => {
+          const paid = Number(r.amountPaid) || 0;
+          const due = Number(r.amountDue) || 0;
+          return { student: r.fullName, phone: r.phone, email: r.email, course_ar: coursesById[r.courseId]?.title?.ar || '', course_en: coursesById[r.courseId]?.title?.en || '', stage: r.stage, amount_due: due, amount_paid: paid, outstanding: Math.max(0, due - paid), method: r.method, createdAt: r.createdAt?.slice(0, 10) };
+        });
+      case 'payments': {
+        const rows = [];
+        for (const r of storageAdapter.getCollection('subscriptionRequests')) {
+          if (Array.isArray(r.payments) && r.payments.length) {
+            for (const p of r.payments) {
+              rows.push({ student: r.fullName, phone: r.phone, course_ar: coursesById[r.courseId]?.title?.ar || '', amount: Number(p.amount) || 0, method: p.method, recorded_by: usersById[p.by]?.name || p.by || '', date: p.at?.slice(0, 10) });
+            }
+          } else if ((Number(r.amountPaid) || 0) > 0) {
+            // Legacy / grandfathered requests may have amountPaid without a
+            // payments array — surface them as a single settlement row.
+            rows.push({ student: r.fullName, phone: r.phone, course_ar: coursesById[r.courseId]?.title?.ar || '', amount: Number(r.amountPaid) || 0, method: r.method || 'cash', recorded_by: 'تسوية (بيانات قديمة)', date: (r.decidedAt || r.createdAt || '').slice(0, 10) });
+          }
+        }
+        return rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
       default:
         return [];
     }

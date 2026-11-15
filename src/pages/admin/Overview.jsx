@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
-import { Users, GraduationCap, BookOpen, CheckCircle2, Clock3, ClipboardList, Award, Star, Inbox, ChevronRight, ChevronLeft, TrendingUp } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, CheckCircle2, Clock3, ClipboardList, Award, Star, Inbox, ChevronRight, ChevronLeft, TrendingUp, Banknote, BadgeCheck, Wallet } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { useLanguage } from '../../i18n/index.jsx';
 import { analyticsService } from '../../services/analyticsService';
+import { subscriptionService } from '../../services/subscriptionService';
 import { courseService } from '../../services/courseService';
 import { storageAdapter } from '../../storage/storageAdapter';
 import { userService } from '../../services/userService';
@@ -12,7 +13,7 @@ import StatCard from '../../components/common/StatCard';
 import PageHeader from '../../components/common/PageHeader';
 import Avatar from '../../components/common/Avatar';
 import { localized } from '../../utils/localized';
-import { timeAgo } from '../../utils/format';
+import { timeAgo, formatNumber } from '../../utils/format';
 
 const tooltipStyle = { background: '#1B2740', border: '1px solid #2c3a55', borderRadius: 12, fontSize: 12 };
 const PIE_COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899', '#14B8A6', '#F97316', '#64748B'];
@@ -30,7 +31,8 @@ export default function AdminOverview() {
     const pending = courseService.getAll().filter((c) => c.status === 'pending').slice(0, 4);
     const messages = storageAdapter.getCollection('messages').filter((m) => m.status === 'open').slice(0, 4);
     const recentActivity = storageAdapter.getCollection('enrollments').sort((a, b) => new Date(b.enrolledAt) - new Date(a.enrolledAt)).slice(0, 5).map((e) => ({ ...e, student: userService.getById(e.studentId), course: courseService.getById(e.courseId) }));
-    return { kpis, enrollmentTrend, userGrowth, distribution, pending, messages, recentActivity };
+    const sales = subscriptionService.stats();
+    return { kpis, enrollmentTrend, userGrowth, distribution, pending, messages, recentActivity, sales };
   }, []);
 
   return (
@@ -47,6 +49,42 @@ export default function AdminOverview() {
         <StatCard icon={Star} label={t('admin.overview') + ' ★'} value={data.kpis.avgRating ? data.kpis.avgRating.toFixed(1) : '—'} tone="amber" />
         <StatCard icon={GraduationCap} label={t('admin.kpiStudents')} value={data.kpis.students} tone="emerald" />
         <StatCard icon={CheckCircle2} label={t('admin.kpiPublished')} value={data.kpis.published} tone="sky" />
+      </div>
+
+      {/* Sales & subscriptions strip */}
+      <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="inline-flex items-center gap-2.5">
+            <span className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center"><Banknote size={20} className="text-emerald-400" aria-hidden="true" /></span>
+            <span>
+              <span className="block text-sm font-black text-slate-100">{t('admin.salesStripTitle')}</span>
+              <span className="block text-[10px] text-slate-500">{t('admin.salesStripSubtitle')}</span>
+            </span>
+          </div>
+          <Link to="/sales" className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-black bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/30 transition-colors">{t('admin.viewSales')}<Chevron size={13} aria-hidden="true" /></Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="rounded-xl border border-emerald-500/15 bg-[#151F32] px-4 py-3">
+            <span className="block text-[10px] font-bold text-slate-500">{t('sales.kpiTotal')}</span>
+            <span className="block text-xl font-black text-slate-100 tnum mt-0.5">{formatNumber(data.sales.total, locale)}</span>
+            <span className="block text-[9px] text-slate-600">{data.sales.thisMonth} {t('sales.kpiThisMonth')}</span>
+          </div>
+          <div className="rounded-xl border border-emerald-500/15 bg-[#151F32] px-4 py-3">
+            <span className="block text-[10px] font-bold text-slate-500">{t('sales.kpiCompleted')}</span>
+            <span className="block text-xl font-black text-emerald-400 tnum mt-0.5 inline-flex items-center gap-1.5"><BadgeCheck size={17} aria-hidden="true" />{formatNumber(data.sales.byStage.completed || 0, locale)}</span>
+            <span className="block text-[9px] text-slate-600">{formatNumber((data.sales.byStage.new || 0) + (data.sales.byStage.contacted || 0), locale)} {t('sales.kpiNew')}</span>
+          </div>
+          <div className="rounded-xl border border-emerald-500/15 bg-[#151F32] px-4 py-3">
+            <span className="block text-[10px] font-bold text-slate-500">{t('sales.kpiRevenue')}</span>
+            <span className="block text-xl font-black text-emerald-400 tnum mt-0.5">{formatNumber(data.sales.paidTotal, locale)} <span className="text-[10px] font-bold text-slate-500">ج.م</span></span>
+            <span className="block text-[9px] text-slate-600">{t('sales.paymentMethodCash')}</span>
+          </div>
+          <div className="rounded-xl border border-amber-500/20 bg-[#151F32] px-4 py-3">
+            <span className="block text-[10px] font-bold text-slate-500">{t('sales.kpiOutstanding')}</span>
+            <span className="block text-xl font-black text-amber-400 tnum mt-0.5 inline-flex items-center gap-1.5"><Wallet size={17} aria-hidden="true" />{formatNumber(data.sales.outstanding, locale)} <span className="text-[10px] font-bold text-slate-500">ج.م</span></span>
+            <span className="block text-[9px] text-slate-600">{formatNumber(data.sales.dueTotal, locale)} ج.م {t('sales.amountDue')}</span>
+          </div>
+        </div>
       </div>
 
       <div className="grid xl:grid-cols-3 gap-5">
