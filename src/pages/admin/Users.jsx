@@ -28,6 +28,7 @@ export default function Users() {
   const [form, setForm] = useState(emptyForm);
   const [confirmSuspend, setConfirmSuspend] = useState(null); // {id, suspend}
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState(false);
   const [tick, setTick] = useState(0);
   const refresh = () => setTick((v) => v + 1);
 
@@ -42,18 +43,29 @@ export default function Users() {
     setShowPassword(false);
     setModal({ id: u.id });
   };
-  const save = () => {
-    if (!form.name.trim() || !form.email.trim()) { toast.error(t('validation.required')); return; }
+  const persist = () => {
     if (modal === 'create') {
-      if (!form.password.trim()) { toast.error(t('validation.required')); return; }
       const res = userService.create(form);
       if (!res.ok) { toast.error(res.error === 'email_exists' ? t('auth.emailExists') : t('errors.generic')); return; }
     } else {
       userService.update(modal.id, { name: form.name, email: form.email, role: form.role, status: form.status, ...(form.password ? { password: form.password } : {}) });
     }
     setModal(null);
+    setPendingRoleChange(false);
     toast.success(t('admin.userSaved'));
     refresh();
+  };
+  const save = () => {
+    if (!form.name.trim() || !form.email.trim()) { toast.error(t('validation.required')); return; }
+    if (modal === 'create') {
+      if (!form.password.trim()) { toast.error(t('validation.required')); return; }
+      persist();
+      return;
+    }
+    // Warn before changing a user's role — permissions change completely.
+    const original = userService.getPrivateById(modal.id)?.role;
+    if (original && original !== form.role) { setPendingRoleChange(true); return; }
+    persist();
   };
   const toggleStatus = (u) => {
     const suspend = u.status === 'active';
@@ -82,6 +94,7 @@ export default function Users() {
           <option value="admin">{t('roles.admin')}</option>
           <option value="instructor">{t('roles.instructor')}</option>
           <option value="student">{t('roles.student')}</option>
+          <option value="sales">{t('roles.sales')}</option>
         </Select>
         <Select dark value={status} onChange={(e) => setStatus(e.target.value)} aria-label={t('admin.filterStatus')} className="sm:w-40">
           <option value="">{t('admin.filterStatus')}: {t('common.all')}</option>
@@ -133,6 +146,7 @@ export default function Users() {
               <Select dark id="uRole" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
                 <option value="student">{t('roles.student')}</option>
                 <option value="instructor">{t('roles.instructor')}</option>
+                <option value="sales">{t('roles.sales')}</option>
                 <option value="admin">{t('roles.admin')}</option>
               </Select>
             </FormField>
@@ -148,6 +162,7 @@ export default function Users() {
       </Modal>
 
       <ConfirmDialog open={!!confirmSuspend} onClose={() => setConfirmSuspend(null)} onConfirm={() => toggleStatus(confirmSuspend)} title={confirmSuspend?.status === 'active' ? t('admin.suspend') : t('admin.activate')} message={confirmSuspend?.status === 'active' ? t('admin.confirmSuspend') : t('admin.confirmActivate')} confirmLabel={confirmSuspend?.status === 'active' ? t('admin.suspend') : t('admin.activate')} danger={confirmSuspend?.status === 'active'} />
+      <ConfirmDialog open={pendingRoleChange} onClose={() => setPendingRoleChange(false)} onConfirm={persist} title={t('admin.roleChangeTitle')} message={t('admin.roleChangeMessage')} confirmLabel={t('admin.roleChangeConfirm')} danger />
       <ConfirmDialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)} onConfirm={doDelete} title={t('admin.deleteUser')} message={t('admin.confirmDeleteUser')} confirmLabel={t('common.delete')} danger />
     </div>
   );

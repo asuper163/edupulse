@@ -189,6 +189,13 @@ See §4. ~105 source files. Key singles: `index.html` (fonts, ar/rtl bootstrap),
 
 ## 17. Change Log
 
+- **2026-11-15 v2.7.0 — ADMIN CAN CHANGE ANY USER'S ROLE (ALL FOUR ROLES), WITH CONFIRMATION; SALES ROLE SELECTABLE EVERYWHERE.**
+  - User ask ("اريد المدير ان يكون قادر علي تغير ال rule الخاصة بكل مستخدم"): the admin user editor could only assign student/instructor/admin — the sales role was unselectable.
+  - `src/pages/admin/Users.jsx` — filter dropdown and create/edit form now both list **مسؤول الاشتراكات**; save flow: changing role shows a mandatory `ConfirmDialog` («تغيير دور المستخدم؟» — warns that permissions change completely) before persisting.
+  - `src/pages/admin/UserDetails.jsx` — new inline «الدور والصلاحيات» panel with the same 4-role dropdown; disabled for the admin's own account with the explanation `admin.selfRoleLocked`; change persists after a confirmation dialog + toast; sidebar/detail page update immediately.
+  - New `ar.js` keys: `admin.changeRole`, `admin.roleChanged`, `admin.selfRoleLocked`, `admin.roleChangeTitle/Message/Confirm`.
+  - Verified in browser (admin login): Users list edit → أحمد حسن row → «مدرب» persists; UserDetails for usr_stu_01 → change student→sales → confirm → UI + storage show sales (restored to student afterwards; Amr Hany restored to student too — demo state tidy). Role filter by «مسؤول الاشتراكات» lists the seeded sales user. Build ✓ (7.3s).
+
 - **2026-11-15 v2.6.0 — ADMIN GAINS FULL SALES VISIBILITY: PAID/REMAINING KPIs, SIDEBAR CRM LINK, SALES & PAYMENTS CSV REPORTS.**
   - User ask: platform admin needs to know sales, see paid vs. remaining, and export sales-specific reports.
   - **Admin sidebar** (`AdminLayout.jsx`) — new item «المبيعات والاشتراكات» (Banknote icon) → `/sales` (admin can already open the CRM; it was undiscoverable).
