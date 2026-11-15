@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* ── EDUPULSE Design Tokens ─────────────────────────────────────────── */
+@theme {
+  --color-primary: #10B981;
+  --color-primary-hover: #059669;
+  --color-primary-soft: #10b9811f;
+  --color-dark-bg: #0B1120;
+  --color-dark-surface: #151F32;
+  --color-dark-surface-2: #1B2740;
+  --color-dark-border: #233047;
+  --color-dark-text: #F1F5F9;
+  --color-light-bg: #F8FAFC;
+  --color-light-surface: #FFFFFF;
+  --color-light-border: #E2E8F0;
+  --color-light-text: #0F172A;
+  --color-muted: #64748B;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-info: #3B82F6;
+
+  --font-arabic: "Cairo", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-latin: "Inter", system-ui, -apple-system, sans-serif;
+
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 3px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.05);
+  --shadow-dark-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.35);
+}
+
+html { font-family: var(--font-arabic); }
+
+html { scroll-behavior: smooth; }
+body { background: var(--color-light-bg); }
+
+/* Visible, consistent focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Thin scrollbars inside dark dashboards */
+.dark-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.dark-scroll::-webkit-scrollbar-thumb { background: #2c3a55; border-radius: 8px; }
+.dark-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(100,116,139,.18) 25%, rgba(100,116,139,.32) 37%, rgba(100,116,139,.18) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast-in { animation: toast-in .22s ease-out; }
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-in { animation: modal-in .2s ease-out; }
+
+/* Hide number-input spinner arrows (up/down scrollbar) everywhere */
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ── Certificate print styles ───────────────────────────────────────── */
+@media print {
+  body * { visibility: hidden !important; }
+  .certificate-print, .certificate-print * { visibility: visible !important; }
+  .certificate-print {
+    position: fixed !important; inset: 0 !important;
+    width: 100% !important; height: 100vh !important;
+    margin: 0 !important; padding: 0 !important;
+    box-shadow: none !important; border-radius: 0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  @page { size: A4 landscape; margin: 0; }
+}
+
+/* Numeric alignment for tables/stats */
+.tnum { font-variant-numeric: tabular-nums; }
