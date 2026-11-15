@@ -189,6 +189,10 @@ See §4. ~105 source files. Key singles: `index.html` (fonts, ar/rtl bootstrap),
 
 ## 17. Change Log
 
+- **2026-11-15 v2.9.0 — ADMIN «CHANGE PASSWORD» EYE ICON OVERLAPPED THE TEXT (RTL/LTR MIX); FIXED.**
+  - Root cause: the admin user editor's password input is `dir="ltr"`, so its `paddingInlineEnd` reserves space on the **right**, while the toggle button used `end-3` (logical `inset-inline-end`) which, on the RTL page, resolves to **left** — the eye landed on top of the typed password.
+  - Fix: `src/pages/admin/Users.jsx` — eye button switched from `end-3` to physical `right-3`, matching the input direction. Other eye toggles verified consistent (Login/Register inherit RTL so padding and button both resolve to the left — no overlap). Verified geometrically: 44px end padding, button sits inside the padded zone, no text overlap. Build ✓.
+
 - **2026-11-15 v2.8.0 — ADMIN GETS A DEDICATED SALES SCREEN (/admin/sales) INSTEAD OF THE SALES MANAGER'S CRM PAGE.**
   - User feedback: clicking «المبيعات» opened the مسؤول الاشتراكات' `/sales` — user wanted the admin to have their own full sales/subscription screen, not that role's page.
   - **New page** `src/pages/admin/Sales.jsx` at `/admin/sales` (registered in `router.jsx` under the admin group): admin-themed header with two CSV export buttons («تصدير الطلبات» / «تصدير المدفوعات»), **8 KPIs** (إجمالي الطلبات + طلبات هذا الشهر، جديدة+قيد التواصل، مكتملة+مرفوضة، **معدل التحصيل %**، المطلوب، المدفوع، المتبقي، عدد الدورات المحسوبة), monthly revenue bar chart, «الإيرادات حسب الدورة» pie, «آخر ٨ مدفوعات» list, **per-course collection table** (الطلبات/مكتمل/المطلوب/المدفوع/المتبقي/التحصيل%), and a **full ledger** of every request with search + stage filter + sticky header (top 200 rows). No horizontal scroll, no console errors; live numbers (٤٣ طلب · ٣٤٥٬٨٠٠ ج.م مدفوع · معدل تحصيل ٩٤٪ · المتبقي ٢١٬٠٠٠ ج.م).

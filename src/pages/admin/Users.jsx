@@ -135,8 +135,8 @@ export default function Users() {
           <FormField dark label={t('auth.email')} htmlFor="uEmail" required><Input dark id="uEmail" type="email" dir="ltr" className="text-start" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></FormField>
           <FormField dark label={`${t('admin.passwordLabel')}${modal === 'create' ? ' *' : ''}`} htmlFor="uPass" hint={modal === 'create' ? undefined : '(مرئية للمدير — النسخة التجريبية تخزنها كنص عادي)'}>
             <div className="relative">
-              <Input dark id="uPass" type={showPassword ? 'text' : 'password'} dir="ltr" className="text-start pe-11" autoComplete="new-password" placeholder={modal === 'create' ? 'Demo123' : ''} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-              <button type="button" onClick={() => setShowPassword((v) => !v)} aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'} className="absolute top-1/2 -translate-y-1/2 end-3 text-slate-500 hover:text-slate-200 transition-colors">
+              <Input dark id="uPass" type={showPassword ? 'text' : 'password'} dir="ltr" className="text-start" autoComplete="new-password" placeholder={modal === 'create' ? 'Demo123' : ''} style={{ paddingInlineEnd: '2.75rem' }} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+              <button type="button" onClick={() => setShowPassword((v) => !v)} aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'} className="absolute top-1/2 -translate-y-1/2 right-3 text-slate-500 hover:text-slate-200 transition-colors">
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>

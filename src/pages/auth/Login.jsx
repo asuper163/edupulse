@@ -127,7 +127,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 invalid={!!errors.password}
-                className="pe-12"
+                style={{ paddingInlineEnd: '3rem' }}
                 {...register("password")}
               />
               <button
