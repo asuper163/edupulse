@@ -75,6 +75,7 @@ const AdminMessages = lazy(() => import("../pages/admin/Messages"));
 const AdminNotifications = lazy(() => import("../pages/admin/Notifications"));
 const AdminSettings = lazy(() => import("../pages/admin/Settings"));
 const AdminDataManagement = lazy(() => import("../pages/admin/DataManagement"));
+const AdminSales = lazy(() => import("../pages/admin/Sales"));
 
 // Sales pages (subscription CRM)
 const SalesOverview = lazy(() => import("../pages/sales/Overview"));
@@ -201,6 +202,7 @@ export default function AppRouter() {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/certificates" element={<AdminCertificates />} />
           <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/sales" element={<AdminSales />} />
           <Route path="/admin/messages" element={<AdminMessages />} />
           <Route path="/admin/notifications" element={<AdminNotifications />} />
           <Route path="/admin/settings" element={<AdminSettings />} />

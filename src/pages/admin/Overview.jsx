@@ -61,7 +61,7 @@ export default function AdminOverview() {
               <span className="block text-[10px] text-slate-500">{t('admin.salesStripSubtitle')}</span>
             </span>
           </div>
-          <Link to="/sales" className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-black bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/30 transition-colors">{t('admin.viewSales')}<Chevron size={13} aria-hidden="true" /></Link>
+          <Link to="/admin/sales" className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-black bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/30 transition-colors">{t('admin.viewSales')}<Chevron size={13} aria-hidden="true" /></Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="rounded-xl border border-emerald-500/15 bg-[#151F32] px-4 py-3">

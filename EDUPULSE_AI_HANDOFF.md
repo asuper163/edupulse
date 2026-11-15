@@ -189,6 +189,12 @@ See §4. ~105 source files. Key singles: `index.html` (fonts, ar/rtl bootstrap),
 
 ## 17. Change Log
 
+- **2026-11-15 v2.8.0 — ADMIN GETS A DEDICATED SALES SCREEN (/admin/sales) INSTEAD OF THE SALES MANAGER'S CRM PAGE.**
+  - User feedback: clicking «المبيعات» opened the مسؤول الاشتراكات' `/sales` — user wanted the admin to have their own full sales/subscription screen, not that role's page.
+  - **New page** `src/pages/admin/Sales.jsx` at `/admin/sales` (registered in `router.jsx` under the admin group): admin-themed header with two CSV export buttons («تصدير الطلبات» / «تصدير المدفوعات»), **8 KPIs** (إجمالي الطلبات + طلبات هذا الشهر، جديدة+قيد التواصل، مكتملة+مرفوضة، **معدل التحصيل %**، المطلوب، المدفوع، المتبقي، عدد الدورات المحسوبة), monthly revenue bar chart, «الإيرادات حسب الدورة» pie, «آخر ٨ مدفوعات» list, **per-course collection table** (الطلبات/مكتمل/المطلوب/المدفوع/المتبقي/التحصيل%), and a **full ledger** of every request with search + stage filter + sticky header (top 200 rows). No horizontal scroll, no console errors; live numbers (٤٣ طلب · ٣٤٥٬٨٠٠ ج.م مدفوع · معدل تحصيل ٩٤٪ · المتبقي ٢١٬٠٠٠ ج.م).
+  - Sidebar «المبيعات والاشتراكات» and the overview strip's «عرض كل المبيعات» now route to `/admin/sales` (admins keep read access to `/sales` for compatibility).
+  - Build ✓ (7.05s). Verified navigation from both entry points → `#/admin/sales`.
+
 - **2026-11-15 v2.7.0 — ADMIN CAN CHANGE ANY USER'S ROLE (ALL FOUR ROLES), WITH CONFIRMATION; SALES ROLE SELECTABLE EVERYWHERE.**
   - User ask ("اريد المدير ان يكون قادر علي تغير ال rule الخاصة بكل مستخدم"): the admin user editor could only assign student/instructor/admin — the sales role was unselectable.
   - `src/pages/admin/Users.jsx` — filter dropdown and create/edit form now both list **مسؤول الاشتراكات**; save flow: changing role shows a mandatory `ConfirmDialog` («تغيير دور المستخدم؟» — warns that permissions change completely) before persisting.

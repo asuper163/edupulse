@@ -14,7 +14,7 @@ export default function AdminLayout() {
     { to: '/admin/reviews', icon: Star, label: t('admin.reviews') },
     { to: '/admin/certificates', icon: Award, label: t('admin.certificates') },
     { to: '/admin/reports', icon: FileText, label: t('admin.reports') },
-    { to: '/sales', icon: Banknote, label: t('admin.salesCrm') },
+    { to: '/admin/sales', icon: Banknote, label: t('admin.salesCrm') },
     { to: '/admin/messages', icon: Mail, label: t('admin.messages') },
     { to: '/admin/notifications', icon: Bell, label: t('admin.notifications') },
     { to: '/admin/settings', icon: Settings, label: t('admin.settings') },
